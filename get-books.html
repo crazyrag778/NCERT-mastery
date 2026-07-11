@@ -37,10 +37,24 @@
             text-decoration: underline;
         }
 
+        #book-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
         .book-list {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 14px;
+            width: 100%;
+        }
+
+        .section-block {
+            margin-bottom: 0;
+            display: block;
+            width: 100%;
         }
     </style>
 </head>
@@ -79,8 +93,10 @@
 
     <script>
         const books = [
-            { title: 'Chemistry Part 1 (Class 11)', subject: 'Chemistry', link: './ncert-data/kech1dd/' },
-            { title: 'Chemistry Part 2 (Class 11)', subject: 'Chemistry', link: './ncert-data/kech2dd/' }
+            { title: 'Chemistry Part 1 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech1dd/' },
+            { title: 'Chemistry Part 2 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech2dd/' },
+            { title: 'Biology (Class 11)', subject: 'Biology', className: 'Class 11', link: './ncert-data/kebo1dd/read.html' },
+            { title: 'Biology (Class 12)', subject: 'Biology', className: 'Class 12', link: './ncert-data/lebo1dd/read.html' }
         ];
 
         function renderBooks(filter = '') {
@@ -89,7 +105,7 @@
             list.innerHTML = '';
 
             const visibleBooks = books.filter((book) => {
-                const text = `${book.title} ${book.subject}`.toLowerCase();
+                const text = `${book.title} ${book.subject} ${book.className}`.toLowerCase();
                 return text.includes(search);
             });
 
@@ -98,19 +114,39 @@
                 return;
             }
 
-            visibleBooks.forEach((book) => {
-                const card = document.createElement('div');
-                card.className = 'w3-card w3-hover-shadow';
-                card.innerHTML = `
-                    <div class="w3-container w3-theme-d2">
-                        <h4>${book.title}</h4>
-                    </div>
-                    <div class="w3-container w3-padding-16">
-                        <p class="w3-text-grey">Subject: ${book.subject}</p>
-                        <a class="w3-button w3-theme-d2 w3-round" href="${book.link}">Open Book</a>
-                    </div>
-                `;
-                list.appendChild(card);
+            const groups = {
+                'Class 11': visibleBooks.filter((book) => book.className === 'Class 11'),
+                'Class 12': visibleBooks.filter((book) => book.className === 'Class 12')
+            };
+
+            Object.entries(groups).forEach(([className, groupBooks]) => {
+                if (!groupBooks.length) {
+                    return;
+                }
+
+                const section = document.createElement('div');
+                section.className = 'section-block';
+                section.innerHTML = `<h3 class="w3-margin-bottom w3-border-bottom w3-padding-bottom">${className}</h3>`;
+                const grid = document.createElement('div');
+                grid.className = 'book-list';
+
+                groupBooks.forEach((book) => {
+                    const card = document.createElement('div');
+                    card.className = 'w3-card w3-hover-shadow';
+                    card.innerHTML = `
+                        <div class="w3-container w3-theme-d2">
+                            <h4>${book.title}</h4>
+                        </div>
+                        <div class="w3-container w3-padding-16">
+                            <p class="w3-text-grey">Subject: ${book.subject}</p>
+                            <a class="w3-button w3-theme-d2 w3-round" href="${book.link}">Open Book</a>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                section.appendChild(grid);
+                list.appendChild(section);
             });
         }
 
