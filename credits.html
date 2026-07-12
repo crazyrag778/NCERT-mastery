@@ -60,6 +60,27 @@
             padding: 28px 24px;
         }
 
+        .feedback-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
+            margin-top: 24px;
+            background: #ffffff;
+        }
+
+        .feedback-frame {
+            width: 100%;
+            min-height: 860px;
+            border: 0;
+            background: #ffffff;
+        }
+
+        .feedback-actions {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 8px;
+        }
+
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Montenegrin Gothic One', 'Yuyu Sans', serif;
         }
@@ -108,6 +129,25 @@
                         <a href="https://github.com/crazyrag778" target="_blank" rel="noopener noreferrer" class="w3-button w3-theme-d2 w3-round">Visit GitHub</a>
                         <a href="https://crazyrag778.github.io" target="_blank" rel="noopener noreferrer" class="w3-button w3-theme-l2 w3-round">Visit Website</a>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-card feedback-card">
+            <div class="w3-container w3-theme-d3 w3-padding-16">
+                <h3 class="w3-xlarge">Feedback</h3>
+                <p class="w3-large">Share your thoughts, suggestions, or issues with NCERT Mastery.</p>
+            </div>
+            <div class="w3-container w3-padding-0">
+                <iframe
+                    class="feedback-frame"
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdG4W1suE8vphZwRQKHge77_2bTOgKBexIqW-69LyPP5zA49A/viewform?usp=publish-editor"
+                    title="NCERT Mastery Feedback Form"
+                    loading="lazy"
+                    allowfullscreen>
+                </iframe>
+                <div class="feedback-actions">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdG4W1suE8vphZwRQKHge77_2bTOgKBexIqW-69LyPP5zA49A/viewform?usp=publish-editor" target="_blank" rel="noopener noreferrer" class="w3-button w3-theme-l2 w3-round">Open feedback form in new tab</a>
                 </div>
             </div>
         </div>
