@@ -393,6 +393,7 @@
                 canvas.width = viewport.width;
                 const context = canvas.getContext('2d');
 
+                pdfViewer.innerHTML = '';
                 wrapper.appendChild(canvas);
                 pdfViewer.appendChild(wrapper);
                 pageEntries = [{ pageNumber, wrapper, canvas }];
@@ -429,6 +430,9 @@
                         canvas.width = viewport.width;
                         const context = canvas.getContext('2d');
 
+                        if (!pageEntries.length) {
+                            pdfViewer.innerHTML = '';
+                        }
                         wrapper.appendChild(canvas);
                         pdfViewer.appendChild(wrapper);
                         pageEntries.push({ pageNumber, wrapper, canvas });
