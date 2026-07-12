@@ -56,6 +56,10 @@
             display: block;
             width: 100%;
         }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montenegrin Gothic One', 'Yuyu Sans', serif;
+        }
     </style>
 </head>
 <body class="montenegrin-gothic-one-regular">
@@ -83,7 +87,7 @@
                         <h3 class="w3-margin-top">Available Books</h3>
                     </div>
                     <div class="w3-col s12 m4">
-                        <input id="book-search" class="w3-input w3-border w3-round" type="text" placeholder="Search books...">
+                        <input id="book-search" class="w3-theme-l5" style="border: 1px solid #c9aaa2; border-radius: 6px; padding: 8px 12px; width: 100%;" type="text" placeholder="Search books...">
                     </div>
                 </div>
                 <div id="book-list" class="book-list"></div>
@@ -93,8 +97,8 @@
 
     <script>
         const books = [
-            { title: 'Chemistry Part 1 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech1dd/' },
-            { title: 'Chemistry Part 2 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech2dd/' },
+            { title: 'Chemistry Part 1 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech1dd/read.html' },
+            { title: 'Chemistry Part 2 (Class 11)', subject: 'Chemistry', className: 'Class 11', link: './ncert-data/kech2dd/read.html' },
             { title: 'Biology (Class 11)', subject: 'Biology', className: 'Class 11', link: './ncert-data/kebo1dd/read.html' },
             { title: 'Biology (Class 12)', subject: 'Biology', className: 'Class 12', link: './ncert-data/lebo1dd/read.html' }
         ];
@@ -110,7 +114,7 @@
             });
 
             if (!visibleBooks.length) {
-                list.innerHTML = '<div class="w3-panel w3-pale-red w3-padding">No books matched your search.</div>';
+                list.innerHTML = '<div class="w3-theme-l1" style="padding: 16px; border: 1px solid #c9aaa2;">No books matched your search.</div>';
                 return;
             }
 
@@ -126,19 +130,19 @@
 
                 const section = document.createElement('div');
                 section.className = 'section-block';
-                section.innerHTML = `<h3 class="w3-margin-bottom w3-border-bottom w3-padding-bottom">${className}</h3>`;
+                section.innerHTML = `<h3 class="w3-margin-bottom w3-border-bottom w3-border-theme w3-padding-bottom">${className}</h3>`;
                 const grid = document.createElement('div');
                 grid.className = 'book-list';
 
                 groupBooks.forEach((book) => {
                     const card = document.createElement('div');
-                    card.className = 'w3-card w3-hover-shadow';
+                    card.className = 'w3-card w3-hover-theme';
                     card.innerHTML = `
                         <div class="w3-container w3-theme-d2">
                             <h4>${book.title}</h4>
                         </div>
                         <div class="w3-container w3-padding-16">
-                            <p class="w3-text-grey">Subject: ${book.subject}</p>
+                            <p class="w3-text-theme">Subject: ${book.subject}</p>
                             <a class="w3-button w3-theme-d2 w3-round" href="${book.link}">Open Book</a>
                         </div>
                     `;

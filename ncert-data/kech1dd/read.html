@@ -58,6 +58,11 @@
             background: #f1f5f9;
         }
 
+        .pdf-toolbar .mode-toggle {
+            background: #e0f2fe;
+            border-color: #7dd3fc;
+        }
+
         .pdf-toolbar button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -65,7 +70,8 @@
 
         #pdf-viewer {
             min-height: 72vh;
-            max-height: 78vh;
+            height: auto;
+            max-height: none;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
             overflow: auto;
@@ -74,14 +80,25 @@
             text-align: center;
         }
 
+        #pdf-viewer.viewer-page-mode {
+            overflow: auto;
+        }
+
+        #pdf-viewer.viewer-scroll-mode {
+            overflow: auto;
+        }
+
         .pdf-page-wrapper {
             margin: 0 auto 16px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
+            width: 100%;
         }
 
         .pdf-page-canvas {
             max-width: 100%;
+            width: auto;
             height: auto;
             display: block;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
@@ -108,6 +125,10 @@
 
         .pdf-card .w3-button {
             margin-top: 10px;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Montenegrin Gothic One', 'Yuyu Sans', serif;
         }
 
         @media (max-width: 600px) {
@@ -149,10 +170,10 @@
                 <div class="w3-row-padding w3-margin-bottom">
                     <div class="w3-col s12 m8">
                         <h3 class="w3-margin-top">Choose a PDF</h3>
-                        <p class="w3-text-grey">Browse the available chapter PDFs and open the one you need.</p>
+                        <p class="w3-text-theme">Browse the available chapter PDFs and open the one you need.</p>
                     </div>
                     <div class="w3-col s12 m4">
-                        <input id="pdf-search" class="w3-input w3-border w3-round" type="text" placeholder="Search PDFs...">
+                        <input id="pdf-search" class="w3-theme-l5" style="border: 1px solid #c9aaa2; border-radius: 6px; padding: 8px 12px; width: 100%;" type="text" placeholder="Search PDFs...">
                     </div>
                 </div>
                 <div id="pdf-list" class="pdf-list"></div>
@@ -163,6 +184,8 @@
                     <button id="back-list">Back to list</button>
                     <button id="prev-page">Previous</button>
                     <button id="next-page">Next</button>
+                    <button id="mode-toggle" class="mode-toggle">Mode: Page</button>
+                    <button id="reading-toggle" class="mode-toggle">Reading: Off</button>
                     <span id="page-info">Loading…</span>
                     <button id="download-pdf">Download</button>
                     <button id="zoom-out">−</button>
@@ -216,17 +239,17 @@
             });
 
             if (!visibleFiles.length) {
-                list.innerHTML = '<div class="w3-panel w3-pale-red w3-padding">No PDFs matched your search.</div>';
+                list.innerHTML = '<div class="w3-theme-l1" style="padding: 16px; border: 1px solid #c9aaa2;">No PDFs matched your search.</div>';
                 return;
             }
 
             visibleFiles.forEach((item) => {
                 const card = document.createElement('div');
-                card.className = 'w3-card w3-hover-shadow pdf-card w3-theme-l5';
+                card.className = 'w3-card w3-hover-theme pdf-card w3-theme-l5';
                 card.innerHTML = `
                     <div class="w3-padding">
                         <h4 class="w3-margin-bottom">${formatName(item)}</h4>
-                        <p class="w3-small w3-text-grey">${item.file}</p>
+                        <p class="w3-small w3-text-theme" style="font-weight: 700;">${item.file}</p>
                     </div>
                     <div class="w3-padding">
                         <button class="w3-button w3-theme-d2 w3-round" data-file="${item.file}">Open PDF</button>
@@ -251,6 +274,8 @@
         const prevPageButton = document.getElementById('prev-page');
         const nextPageButton = document.getElementById('next-page');
         const downloadButton = document.getElementById('download-pdf');
+        const modeToggle = document.getElementById('mode-toggle');
+        const readingToggle = document.getElementById('reading-toggle');
 
         if (window.pdfjsLib) {
             window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
@@ -262,12 +287,36 @@
         let pageEntries = [];
         let scrollTimer = null;
         let currentFileName = '';
+        let viewerMode = 'page';
+        let readingMode = false;
 
         function updatePageInfo(pageNumber) {
             if (pdfDoc) {
                 pageInfo.textContent = `Page ${pageNumber} of ${pdfDoc.numPages}`;
             } else {
                 pageInfo.textContent = 'Loading…';
+            }
+        }
+
+        function updateModeButton() {
+            if (modeToggle) {
+                modeToggle.textContent = viewerMode === 'page' ? 'Mode: Page' : 'Mode: Scroll';
+            }
+            if (readingToggle) {
+                readingToggle.textContent = readingMode ? 'Reading: On' : 'Reading: Off';
+            }
+            pageEntries.forEach((entry) => {
+                if (entry.wrapper) {
+                    entry.wrapper.classList.toggle('w3-grayscale', readingMode);
+                    entry.wrapper.classList.toggle('w3-sepia', readingMode);
+                }
+            });
+        }
+
+        function updateViewerLayout() {
+            if (pdfViewer) {
+                pdfViewer.classList.toggle('viewer-page-mode', viewerMode === 'page');
+                pdfViewer.classList.toggle('viewer-scroll-mode', viewerMode === 'scroll');
             }
         }
 
@@ -318,6 +367,44 @@
             }
         }
 
+        function renderSinglePage(pageNumber) {
+            if (!pdfDoc) {
+                return;
+            }
+
+            pdfViewer.innerHTML = '<p>Loading page…</p>';
+            pageEntries = [];
+            pdfDoc.getPage(pageNumber).then((page) => {
+                const availableWidth = Math.max(240, pdfViewer.clientWidth - 24);
+                const availableHeight = Math.max(240, window.innerHeight - 220);
+                const pageViewport = page.getViewport({ scale: 1 });
+                const widthScale = availableWidth / pageViewport.width;
+                const heightScale = availableHeight / pageViewport.height;
+                const fitScale = Math.min(widthScale, heightScale) * scale;
+                const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(fitScale, 2.5)) });
+                const wrapper = document.createElement('div');
+                wrapper.className = 'pdf-page-wrapper';
+                wrapper.classList.toggle('w3-grayscale', readingMode);
+                wrapper.classList.toggle('w3-sepia', readingMode);
+                const canvas = document.createElement('canvas');
+                canvas.className = 'pdf-page-canvas';
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                const context = canvas.getContext('2d');
+
+                wrapper.appendChild(canvas);
+                pdfViewer.appendChild(wrapper);
+                pageEntries = [{ pageNumber, wrapper, canvas }];
+                currentPageNumber = pageNumber;
+                updatePageInfo(pageNumber);
+                updateNavigationState();
+                return page.render({ canvasContext: context, viewport: viewport }).promise;
+            }).catch((error) => {
+                pdfViewer.innerHTML = '<div class="pdf-error">Unable to render the PDF page.</div>';
+                console.error(error);
+            });
+        }
+
         function renderAllPages() {
             if (!pdfDoc) {
                 return;
@@ -333,6 +420,8 @@
                         const viewport = page.getViewport({ scale: scale });
                         const wrapper = document.createElement('div');
                         wrapper.className = 'pdf-page-wrapper';
+                        wrapper.classList.toggle('w3-grayscale', readingMode);
+                        wrapper.classList.toggle('w3-sepia', readingMode);
                         const canvas = document.createElement('canvas');
                         canvas.className = 'pdf-page-canvas';
                         canvas.height = viewport.height;
@@ -361,20 +450,42 @@
             });
         }
 
+        function setViewerMode(mode) {
+            viewerMode = mode;
+            updateViewerLayout();
+            updateModeButton();
+            if (!pdfDoc) {
+                return;
+            }
+
+            if (viewerMode === 'page') {
+                renderSinglePage(currentPageNumber);
+            } else {
+                renderAllPages();
+            }
+        }
+
         function showViewer(fileName) {
             listView.style.display = 'none';
             viewerView.style.display = 'block';
             currentPageNumber = 1;
             currentFileName = fileName;
             pageEntries = [];
+            viewerMode = 'page';
             pdfViewer.innerHTML = '<p>Loading PDF…</p>';
             pageInfo.textContent = 'Loading…';
+            updateViewerLayout();
+            updateModeButton();
             updateNavigationState();
 
             if (window.pdfjsLib) {
                 window.pdfjsLib.getDocument(`chapters/${fileName}`).promise.then((pdf) => {
                     pdfDoc = pdf;
-                    renderAllPages();
+                    if (viewerMode === 'page') {
+                        renderSinglePage(1);
+                    } else {
+                        renderAllPages();
+                    }
                 }).catch((error) => {
                     pdfViewer.innerHTML = '<div class="pdf-error">The PDF could not be loaded. Please make sure the file exists and the page is being served from a web server.</div>';
                     console.error(error);
@@ -397,13 +508,27 @@
         });
 
         prevPageButton.addEventListener('click', () => {
-            if (pdfDoc && currentPageNumber > 1) {
+            if (!pdfDoc || currentPageNumber <= 1) {
+                return;
+            }
+
+            if (viewerMode === 'page') {
+                currentPageNumber -= 1;
+                renderSinglePage(currentPageNumber);
+            } else {
                 scrollToPage(currentPageNumber - 1);
             }
         });
 
         nextPageButton.addEventListener('click', () => {
-            if (pdfDoc && currentPageNumber < pdfDoc.numPages) {
+            if (!pdfDoc || currentPageNumber >= pdfDoc.numPages) {
+                return;
+            }
+
+            if (viewerMode === 'page') {
+                currentPageNumber += 1;
+                renderSinglePage(currentPageNumber);
+            } else {
                 scrollToPage(currentPageNumber + 1);
             }
         });
@@ -422,6 +547,9 @@
         });
 
         pdfViewer.addEventListener('scroll', () => {
+            if (viewerMode !== 'scroll') {
+                return;
+            }
             if (scrollTimer) {
                 window.clearTimeout(scrollTimer);
             }
@@ -431,20 +559,39 @@
         document.getElementById('zoom-out').addEventListener('click', () => {
             if (scale > 0.75) {
                 scale -= 0.25;
-                renderAllPages();
+                if (viewerMode === 'page') {
+                    renderSinglePage(currentPageNumber);
+                } else {
+                    renderAllPages();
+                }
             }
         });
 
         document.getElementById('zoom-in').addEventListener('click', () => {
             if (scale < 2.5) {
                 scale += 0.25;
-                renderAllPages();
+                if (viewerMode === 'page') {
+                    renderSinglePage(currentPageNumber);
+                } else {
+                    renderAllPages();
+                }
             }
+        });
+
+        modeToggle.addEventListener('click', () => {
+            setViewerMode(viewerMode === 'page' ? 'scroll' : 'page');
+        });
+
+        readingToggle.addEventListener('click', () => {
+            readingMode = !readingMode;
+            updateModeButton();
         });
 
         searchInput.addEventListener('input', (event) => {
             renderPdfList(event.target.value);
         });
+
+        updateModeButton();
 
         const selectedPdf = getSelectedPdf();
         if (selectedPdf) {
