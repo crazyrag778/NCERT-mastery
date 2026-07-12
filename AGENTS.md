@@ -4,16 +4,16 @@
 When asked to generate a reader page for a specific book folder, inspect the existing reader implementation, derive chapter titles from the PDFs when possible, create the new reader page, and register the book in the catalog.
 
 ## Project convention
-- Each book folder under ncert-data/ should contain its own reader page named read.html.
+- Each book folder under ncert-data/ should contain its own reader page named index.html.
 - The existing reader pages in this project are the reference implementation for UI and behavior.
 - PDFs for that book should live in a chapters/ subfolder inside the same book folder.
 
 ## Required workflow
-1. Review an existing reader page from another book, such as ncert-data/kech1dd/read.html, and copy its structure, styling, and interaction patterns.
+1. Review an existing reader page from another book, such as ncert-data/kech1dd/index.html, and copy its structure, styling, and interaction patterns.
 2. Analyze the UI and functions of that reference page so the new page matches the project’s established experience.
 3. Inspect the PDFs in the target folder and extract chapter names from their headings or titles when available.
 4. Build the PDF list in the new reader using those chapter names, with the PDF filenames as the underlying data.
-5. Create the new read.html inside the target book folder.
+5. Create the new index.html inside the target book folder.
 6. Update get-books.html so the new book appears in the catalog with the correct title, subject, class, and link.
 
 ## What to build
@@ -44,8 +44,8 @@ Do not hard-code paths that assume the file is at the repository root.
 
 ## Suggested structure
 1. Create the book folder if it does not exist.
-2. Create read.html in that folder.
-3. Copy the structure from an existing reader page such as ncert-data/kech1dd/read.html.
+2. Create index.html in that folder.
+3. Copy the structure from an existing reader page such as ncert-data/kech1dd/index.html.
 4. Populate the PDF list with the chapter PDFs and the chapter names inferred from the PDFs.
 5. Update get-books.html so the new book is included in the catalog.
 6. Ensure the stylesheet, PDF.js script, and chapter PDF paths use folder-relative links.
