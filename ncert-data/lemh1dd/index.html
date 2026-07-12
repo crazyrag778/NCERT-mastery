@@ -152,6 +152,39 @@
                 padding: 6px;
             }
         }
+    
+        .reading-mode-active {
+            background: #17120d !important;
+            color: #f7eecb !important;
+        }
+
+        .reading-mode-active .pdf-shell,
+        .reading-mode-active .pdf-toolbar,
+        .reading-mode-active #pdf-viewer,
+        .reading-mode-active .pdf-page-wrapper,
+        .reading-mode-active .pdf-page-canvas {
+            background: #221b12 !important;
+            color: #f7eecb !important;
+        }
+
+        .reading-mode-active .pdf-page-canvas {
+            box-shadow: none;
+            background: #2d2418 !important;
+            filter: brightness(0.8) contrast(0.9) saturate(0.75);
+        }
+
+        .reading-mode-active .w3-button,
+        .reading-mode-active button {
+            background: #3b2c1b !important;
+            color: #f7eecb !important;
+            border-color: rgba(247, 238, 203, 0.25) !important;
+        }
+
+        .reading-mode-active .w3-button:hover,
+        .reading-mode-active button:hover {
+            background: #4b3722 !important;
+        }
+
     </style>
 </head>
 <body class="montenegrin-gothic-one-regular w3-theme-l5">
@@ -311,7 +344,7 @@
             }
             pageEntries.forEach((entry) => {
                 if (entry.wrapper) {
-                    entry.wrapper.classList.toggle('w3-sepia-max', readingMode);
+                    entry.wrapper.classList.toggle('reading-mode-active', readingMode);
                 }
             });
         }
@@ -387,7 +420,7 @@
                 const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(fitScale, 2.5)) });
                 const wrapper = document.createElement('div');
                 wrapper.className = 'pdf-page-wrapper';
-                wrapper.classList.toggle('w3-sepia-max', readingMode);
+                wrapper.classList.toggle('reading-mode-active', readingMode);
                 const canvas = document.createElement('canvas');
                 canvas.className = 'pdf-page-canvas w3-theme-l5';
                 canvas.height = viewport.height;
@@ -429,7 +462,7 @@
                         const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(scale * 0.8, 1.2)) });
                         const wrapper = document.createElement('div');
                         wrapper.className = 'pdf-page-wrapper';
-                        wrapper.classList.toggle('w3-sepia-max', readingMode);
+                        wrapper.classList.toggle('reading-mode-active', readingMode);
                         const canvas = document.createElement('canvas');
                         canvas.className = 'pdf-page-canvas w3-theme-l5';
                         canvas.height = viewport.height;
