@@ -291,8 +291,7 @@
             }
             pageEntries.forEach((entry) => {
                 if (entry.wrapper) {
-                    entry.wrapper.classList.toggle('w3-grayscale', readingMode);
-                    entry.wrapper.classList.toggle('w3-sepia', readingMode);
+                    entry.wrapper.classList.toggle('w3-sepia-max', readingMode);
                 }
             });
         }
@@ -363,8 +362,7 @@
                 const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(fitScale, 2.5)) });
                 const wrapper = document.createElement('div');
                 wrapper.className = 'pdf-page-wrapper';
-                wrapper.classList.toggle('w3-grayscale', readingMode);
-                wrapper.classList.toggle('w3-sepia', readingMode);
+                wrapper.classList.toggle('w3-sepia-max', readingMode);
                 const canvas = document.createElement('canvas');
                 canvas.className = 'pdf-page-canvas';
                 canvas.height = viewport.height;
@@ -403,8 +401,7 @@
                         const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(scale * 0.8, 1.2)) });
                         const wrapper = document.createElement('div');
                         wrapper.className = 'pdf-page-wrapper';
-                        wrapper.classList.toggle('w3-grayscale', readingMode);
-                        wrapper.classList.toggle('w3-sepia', readingMode);
+                        wrapper.classList.toggle('w3-sepia-max', readingMode);
                         const canvas = document.createElement('canvas');
                         canvas.className = 'pdf-page-canvas';
                         canvas.height = viewport.height;
