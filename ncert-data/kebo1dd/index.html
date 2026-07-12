@@ -276,6 +276,7 @@
         let currentFileName = '';
         let viewerMode = 'page';
         let readingMode = false;
+        let loadedPageRange = { start: 1, end: 1 };
 
         function updatePageInfo(pageNumber) {
             if (pdfDoc) {
@@ -385,14 +386,16 @@
             });
         }
 
-        function renderAllPages() {
+        function renderAllPages(targetPage = currentPageNumber) {
             if (!pdfDoc) {
                 return;
             }
 
-            const pageWindowSize = window.innerWidth < 768 ? 3 : 4;
-            const startPage = Math.max(1, currentPageNumber - 1);
-            const endPage = Math.min(pdfDoc.numPages, currentPageNumber + pageWindowSize - 1);
+            const requestedStartPage = Math.max(1, Math.min(loadedPageRange.start, targetPage - 2));
+            const requestedEndPage = Math.min(pdfDoc.numPages, Math.max(loadedPageRange.end, targetPage + 2));
+            const startPage = requestedStartPage;
+            const endPage = requestedEndPage;
+            loadedPageRange = { start: startPage, end: endPage };
 
             pdfViewer.innerHTML = '<p>Loading pages…</p>';
             pageEntries = [];
@@ -423,7 +426,7 @@
 
             Promise.all(renderPromises).then(() => {
                 if (pageEntries.length) {
-                    currentPageNumber = Math.min(Math.max(currentPageNumber, 1), pdfDoc.numPages);
+                    currentPageNumber = Math.min(Math.max(targetPage, 1), pdfDoc.numPages);
                     updatePageInfo(currentPageNumber);
                     updateNavigationState();
                     scrollToPage(currentPageNumber, false);
@@ -454,6 +457,7 @@
             currentPageNumber = 1;
             currentFileName = fileName;
             pageEntries = [];
+            loadedPageRange = { start: 1, end: 1 };
             viewerMode = 'page';
             pdfViewer.innerHTML = '<p>Loading PDF…</p>';
             pageInfo.textContent = 'Loading…';
@@ -485,6 +489,7 @@
             currentPageNumber = 1;
             currentFileName = '';
             pageEntries = [];
+            loadedPageRange = { start: 1, end: 1 };
             pdfViewer.innerHTML = '';
             pageInfo.textContent = 'Loading…';
             updateNavigationState();
@@ -499,7 +504,7 @@
                 currentPageNumber -= 1;
                 renderSinglePage(currentPageNumber);
             } else {
-                scrollToPage(currentPageNumber - 1);
+                renderAllPages(currentPageNumber - 1);
             }
         });
 
@@ -512,7 +517,7 @@
                 currentPageNumber += 1;
                 renderSinglePage(currentPageNumber);
             } else {
-                scrollToPage(currentPageNumber + 1);
+                renderAllPages(currentPageNumber + 1);
             }
         });
 
