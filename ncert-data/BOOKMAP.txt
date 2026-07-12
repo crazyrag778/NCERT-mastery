@@ -6,9 +6,19 @@ Class 11-
          = kebo1dd;
     Mathematics:
          = kemh1dd
+  Phyiscs:
+     part1=keph1dd
+     part2=keph2dd
 
 class 12:
   Biology:
         = lebo1dd
   Mathematics
      Part1=lemh1dd
+     part2=lemh2dd
+  Chemistry:
+     part1=lech1dd
+     part2=lech2dd
+  Physics:
+     part1=leph1dd
+     part2=leph2dd

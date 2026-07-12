@@ -13,7 +13,6 @@
     <style>
         body {
             margin: 0;
-            background: #f5f7fb;
         }
 
         .page-shell {
@@ -23,7 +22,6 @@
         }
 
         .pdf-shell {
-            background: #fff;
             border-radius: 10px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
             padding: 16px;
@@ -47,26 +45,22 @@
             position: sticky;
             top: 0;
             z-index: 2;
-            background: #fff;
             padding: 6px 0;
         }
 
         .pdf-toolbar button {
             padding: 8px 12px;
-            border: 1px solid #c9aaa2;
+            border: 1px solid;
             border-radius: 6px;
-            background: #f3ecea;
-            color: #000;
             cursor: pointer;
         }
 
         .pdf-toolbar button:hover {
-            background: #eadedb;
+            background-color: inherit;
         }
 
         .pdf-toolbar .mode-toggle {
-            background: #e8ddd8;
-            border-color: #b89086;
+            border-color: inherit;
         }
 
         .pdf-toolbar button:disabled {
@@ -78,10 +72,9 @@
             min-height: 72vh;
             height: auto;
             max-height: none;
-            border: 1px solid #e2e8f0;
+            border: 1px solid;
             border-radius: 8px;
             overflow: auto;
-            background: #f8fafc;
             padding: 8px;
             text-align: center;
         }
@@ -113,12 +106,10 @@
             height: auto;
             display: block;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-            background: white;
         }
 
         .pdf-error {
             padding: 24px;
-            color: #b91c1c;
         }
 
         .pdf-list {
@@ -163,7 +154,7 @@
         }
     </style>
 </head>
-<body class="montenegrin-gothic-one-regular">
+<body class="montenegrin-gothic-one-regular w3-theme-l5">
     <div class="w3-container w3-theme-d3">
         <div class="w3-bar w3-theme-d3">
             <span class="w3-bar-item w3-xxxlarge">NCERT Mastery</span>
@@ -176,7 +167,7 @@
     </div>
 
     <div class="page-shell">
-        <div class="pdf-shell">
+        <div class="pdf-shell w3-theme-l5">
             <div id="list-view">
                 <div class="w3-row-padding w3-margin-bottom">
                     <div class="w3-col s12 m8">
@@ -184,25 +175,25 @@
                         <p class="w3-text-grey">Browse the mathematics chapter PDFs and open the one you need.</p>
                     </div>
                     <div class="w3-col s12 m4">
-                        <input id="pdf-search" class="w3-theme-l5" style="border: 1px solid #c9aaa2; border-radius: 6px; padding: 8px 12px; width: 100%;" type="text" placeholder="Search PDFs...">
+                        <input id="pdf-search" class="w3-theme-l5 w3-border-theme" style="border: 1px solid; border-radius: 6px; padding: 8px 12px; width: 100%;" type="text" placeholder="Search PDFs...">
                     </div>
                 </div>
                 <div id="pdf-list" class="pdf-list"></div>
             </div>
 
             <div id="viewer-view" style="display: none;">
-                <div class="pdf-toolbar">
-                    <button id="back-list">Back to list</button>
-                    <button id="prev-page">Previous</button>
-                    <button id="next-page">Next</button>
-                    <button id="mode-toggle" class="mode-toggle">Mode: Page</button>
-                    <button id="reading-toggle" class="mode-toggle">Reading: Off</button>
+                <div class="pdf-toolbar w3-theme-l5">
+                    <button id="back-list" class="w3-theme-l2 w3-border-theme">Back to list</button>
+                    <button id="prev-page" class="w3-theme-l2 w3-border-theme">Previous</button>
+                    <button id="next-page" class="w3-theme-l2 w3-border-theme">Next</button>
+                    <button id="mode-toggle" class="mode-toggle w3-theme-l3 w3-border-theme">Mode: Page</button>
+                    <button id="reading-toggle" class="mode-toggle w3-theme-l3 w3-border-theme">Reading: Off</button>
                     <span id="page-info">Loading…</span>
-                    <button id="download-pdf">Download</button>
-                    <button id="zoom-out">−</button>
-                    <button id="zoom-in">+</button>
+                    <button id="download-pdf" class="w3-theme-l2 w3-border-theme">Download</button>
+                    <button id="zoom-out" class="w3-theme-l2 w3-border-theme">−</button>
+                    <button id="zoom-in" class="w3-theme-l2 w3-border-theme">+</button>
                 </div>
-                <div id="pdf-viewer">
+                <div id="pdf-viewer" class="w3-theme-l5">
                     <p>Loading PDF…</p>
                 </div>
             </div>
@@ -251,7 +242,7 @@
             });
 
             if (!visibleFiles.length) {
-                list.innerHTML = '<div class="w3-theme-l1" style="padding: 16px; border: 1px solid #c9aaa2;">No PDFs matched your search.</div>';
+                list.innerHTML = '<div class="w3-theme-l1" style="padding: 16px; border: 1px solid;">No PDFs matched your search.</div>';
                 return;
             }
 
@@ -398,7 +389,7 @@
                 wrapper.className = 'pdf-page-wrapper';
                 wrapper.classList.toggle('w3-sepia-max', readingMode);
                 const canvas = document.createElement('canvas');
-                canvas.className = 'pdf-page-canvas';
+                canvas.className = 'pdf-page-canvas w3-theme-l5';
                 canvas.height = viewport.height;
                 canvas.width = viewport.width;
                 const context = canvas.getContext('2d');
@@ -412,7 +403,7 @@
                 updateNavigationState();
                 return page.render({ canvasContext: context, viewport: viewport }).promise;
             }).catch((error) => {
-                pdfViewer.innerHTML = '<div class="pdf-error">Unable to render the PDF page.</div>';
+                pdfViewer.innerHTML = '<div class="pdf-error w3-text-theme">Unable to render the PDF page.</div>';
                 console.error(error);
             });
         }
@@ -440,7 +431,7 @@
                         wrapper.className = 'pdf-page-wrapper';
                         wrapper.classList.toggle('w3-sepia-max', readingMode);
                         const canvas = document.createElement('canvas');
-                        canvas.className = 'pdf-page-canvas';
+                        canvas.className = 'pdf-page-canvas w3-theme-l5';
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
                         const context = canvas.getContext('2d');
@@ -465,7 +456,7 @@
                     scrollToPage(currentPageNumber, false);
                 }
             }).catch((error) => {
-                pdfViewer.innerHTML = '<div class="pdf-error">Unable to render the PDF pages.</div>';
+                pdfViewer.innerHTML = '<div class="pdf-error w3-text-theme">Unable to render the PDF pages.</div>';
                 console.error(error);
             });
         }
