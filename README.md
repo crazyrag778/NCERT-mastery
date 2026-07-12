@@ -10,7 +10,7 @@ NCERT Mastery is a lightweight, student-friendly web app for reading NCERT books
 
 ## Project website
 Visit the live website here:
-https://crazyrag778.github.io/NCERT-mastery/
+https://crazyrag778.github.io/ncert-mastery/
 
 ## Updates
 Check the website regularly for the latest updates, new books, and improvements to the reading experience.
