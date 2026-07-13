@@ -412,7 +412,10 @@
                 const widthScale = availableWidth / pageViewport.width;
                 const heightScale = availableHeight / pageViewport.height;
                 const fitScale = Math.min(widthScale, heightScale) * scale;
-                const viewport = page.getViewport({ scale: Math.max(0.5, Math.min(fitScale, 2.5)) });
+                const pixelRatio = Math.min(2, Math.max(1.25, window.devicePixelRatio || 1));
+                const viewport = page.getViewport({
+                    scale: Math.max(1, Math.min(fitScale * pixelRatio, 4.5))
+                });
                 const wrapper = document.createElement('div');
                 wrapper.className = 'pdf-page-wrapper';
                 wrapper.classList.toggle('reading-mode-active', readingMode);
